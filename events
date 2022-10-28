@@ -1,0 +1,38 @@
+to clickClassName()
+	tell application "Safari Technology Preview"
+		open location ""
+		activate
+		
+		tell application ¬
+			"System Events" to tell process ¬
+			"Safari Technology Preview" to tell group 3 of toolbar 1 of front window to ¬
+			repeat until exists (first button where its accessibility description = "Reload this page")
+				delay 0.5
+			end repeat
+		tell application "System Events"
+			tell process "Safari Technology Preview"
+				name of every button of group 3 of toolbar 1 of front window
+				repeat until exists (first button where its accessibility description = "Reload this page")
+					delay 0.5
+				end repeat
+			end tell
+		end tell
+		tell application "System Events" to repeat until exists (buttons of ¬
+			UI elements of group 3 of toolbar 1 of front window of ¬
+			process "Safari Technology Preview" whose name = "Stop loading this page")
+			tell process "Safari Technology Preview"
+				name of every button of group 3 of toolbar 1 of front window
+			end tell
+			delay 0.5
+		end repeat
+		tell document 1 to repeat
+			do JavaScript "document.readyState"
+			if the result = "complete" then exit repeat
+			delay 0.5
+		end repeat
+		delay 1
+		do JavaScript "" in document 1
+	end tell
+end clickClassName
+
+clickClassName()
